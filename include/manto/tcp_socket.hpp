@@ -1,8 +1,8 @@
 #pragma once
 
-#include "manto/async_syscall.h"
-#include "manto/future.h"
-#include "manto/network_address.h"
+#include "manto/async_syscall.hpp"
+#include "manto/future.hpp"
+#include "manto/network_address.hpp"
 #include <span>
 #include <sys/types.h>
 #include <sys/socket.h>

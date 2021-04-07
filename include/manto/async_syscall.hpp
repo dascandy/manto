@@ -32,12 +32,12 @@ struct syscall_rv : public syscall_rv_base {
         signal(value);
     }
     syscall_rv(io_uring_sqe* s) 
-    : sqe(s)
     {
+        sqe = s;
         s->user_data = (uintptr_t)(syscall_rv_base*)this;
     }
     syscall_rv(syscall_rv<T>&& o) = delete;
-    const syscall_rv& operator=(syscall_rv<T>&& o) =
+    const syscall_rv& operator=(syscall_rv<T>&& o) = delete;
     ~syscall_rv() {
     }
     bool await_ready() {
@@ -50,12 +50,12 @@ struct syscall_rv : public syscall_rv_base {
         return (T)std::move(rv);
     }
 };
-
+/*
 struct cancellation_token {
     syscall_rv<void> trigger;
     std::vector<syscall_rv_base*> children;
     cancellation_token(syscall_rv<void> trigger) 
-    : trigger(trigger)
+    : trigger(std::move(trigger))
     {
     }
     void cancel() {
@@ -66,7 +66,7 @@ struct cancellation_token {
         children.push_back(p);
     }
 };
-
+*/
 struct kernel_ring {
   kernel_ring() {
     if (io_uring_queue_init(8, &ring, 0) < 0) throw 42;
