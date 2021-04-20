@@ -53,11 +53,7 @@ struct tcp_socket {
     hdr.msg_controllen = 0;
     hdr.msg_flags = 0;
     ssize_t recvres = co_await async_recvmsg(fd, &hdr, 0);
-    if (recvres == -1) {
-      exit(-1);
-    } else {
-      co_return recvres;
-    }
+    co_return recvres >= 0 ? recvres : 0;
   }
   future<Void> sendmsg(std::span<const uint8_t> msg) {
     struct iovec iov = { (void*)msg.data(), msg.size() };
