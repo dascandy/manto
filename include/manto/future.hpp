@@ -1,6 +1,6 @@
 #pragma once
 
-#include <experimental/coroutine>
+#include <coroutine>
 #include <mutex>
 #include <memory>
 #include <variant>
@@ -21,8 +21,8 @@ template <typename T> struct promise;
 
 template <typename T>
 struct promise {
-    using handle_type = std::experimental::coroutine_handle<promise<T>>;
-    std::experimental::coroutine_handle<> awaiting = {};
+    using handle_type = std::coroutine_handle<promise<T>>;
+    std::coroutine_handle<> awaiting = {};
     future<T>* f = nullptr;
     ~promise();
     void set_future(future<T>* f);
@@ -37,7 +37,7 @@ struct promise {
 template<typename T>
 struct future {
     using promise_type = promise<T>;
-    using handle_type = std::experimental::coroutine_handle<promise_type>;
+    using handle_type = std::coroutine_handle<promise_type>;
 
     std::variant<Empty, T, Error> v;
     bool detached = false;
@@ -49,7 +49,7 @@ struct future {
     const future& operator=(future&& rhs);
     ~future();
     bool await_ready();
-    void await_suspend(std::experimental::coroutine_handle<> awaiting);
+    void await_suspend(std::coroutine_handle<> awaiting);
     auto await_resume();
     auto get_value();
 };
@@ -73,7 +73,7 @@ auto promise<T>::get_return_object() {
 }
 template <typename T>
 auto promise<T>::initial_suspend() {
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
 }
 template <typename T>
 auto promise<T>::return_value(T v) {
@@ -83,7 +83,7 @@ auto promise<T>::return_value(T v) {
           std::exchange(awaiting, {}).resume();
         }
     }
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
 }
 template <typename T>
 auto promise<T>::return_value(Error e) {
@@ -93,11 +93,11 @@ auto promise<T>::return_value(Error e) {
           std::exchange(awaiting, {}).resume();
         }
     }
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
 }
 template <typename T>
 auto promise<T>::final_suspend() noexcept {
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
 }
 template <typename T>
 void promise<T>::unhandled_exception() {
@@ -154,7 +154,7 @@ bool future<T>::await_ready() {
     return v.index() > 0;
 }
 template <typename T>
-void future<T>::await_suspend(std::experimental::coroutine_handle<> awaiting) {
+void future<T>::await_suspend(std::coroutine_handle<> awaiting) {
     coro.promise().awaiting = awaiting;
 }
 template <typename T>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <experimental/coroutine>
+#include <coroutine>
 #include <mutex>
 #include <memory>
 #include <cassert>
@@ -115,14 +115,14 @@ struct blocking_promise<void> {
     return get_future();
   }
   auto initial_suspend() {
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
   }
   auto return_void() {
     set_value();
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
   }
   auto final_suspend() {
-    return std::experimental::suspend_always{};
+    return std::suspend_always{};
   }
   void unhandled_exception() {
     std::exit(1);
@@ -147,14 +147,14 @@ struct blocking_promise {
     return get_future();
   }
   auto initial_suspend() {
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
   }
   auto return_value(T v) {
     set_value(std::move(v));
-    return std::experimental::suspend_never{};
+    return std::suspend_never{};
   }
   auto final_suspend() {
-    return std::experimental::suspend_always{};
+    return std::suspend_always{};
   }
   void unhandled_exception() {
     std::exit(1);
